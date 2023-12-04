@@ -52,17 +52,21 @@ class _RegisterPageState extends State<RegisterPage> {
 
     final body = {"name": name, "email": email, "password": password};
     //Submit data to the database
-    const url = 'http://127.0.0.1:8000/api/users';
+    const url = 'http://192.168.31.97:80/api/users';
     final uri = Uri.parse(url);
+
+
     final response = await http.post(
       uri,
       body: jsonEncode(body),
-      headers: {'Accept': 'application/json'},
+      headers: {'Content-Type': 'application/json'},
     );
+
     //Show success of fail message
     print(response.statusCode);
     print(response.body);
   }
+  
 }
 
 
