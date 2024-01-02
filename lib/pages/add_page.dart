@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -38,7 +37,13 @@ class _RegisterPageState extends State<RegisterPage> {
           const SizedBox(
             height: 20,
           ),
-          ElevatedButton(onPressed: submitData, child: const Text('Submit'))
+          ElevatedButton(
+            onPressed: () async {
+              await submitData();
+              Navigator.pop(context);
+            },
+            child: const Text('Submit'),
+          )
         ],
       ),
     );
@@ -52,9 +57,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
     final body = {"name": name, "email": email, "password": password};
     //Submit data to the database
-    const url = 'http://192.168.31.97:80/api/users';
+    const url = 'http://192.168.31.24/api/users';
     final uri = Uri.parse(url);
-
 
     final response = await http.post(
       uri,
@@ -66,7 +70,4 @@ class _RegisterPageState extends State<RegisterPage> {
     print(response.statusCode);
     print(response.body);
   }
-  
 }
-
-
