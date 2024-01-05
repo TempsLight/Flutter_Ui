@@ -2,7 +2,10 @@ import 'package:final_project/pages/add_page.dart';
 import 'package:final_project/pages/edit_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+
+import 'login_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -29,6 +32,12 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 71, 66, 66),
         title: const Text('Final Project'),
+        actions: <Widget>[
+          ElevatedButton(
+            onPressed: () => logout(),
+            child: const Text('Logout'),
+          ),
+        ],
       ),
       body: Visibility(
         visible: isLoading,
@@ -120,7 +129,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       isLoading = false;
     });
-    const url = 'http://192.168.31.24/api/users';
+    const url = 'http://192.168.31.97/api/users';
     final uri = Uri.parse(url);
     final response = await http.get(uri);
 
@@ -164,4 +173,35 @@ class _HomePageState extends State<HomePage> {
       });
     }
   }
+
+  void logout() async {
+  final confirm = await showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text('Confirm Logout'),
+      content: Text('Are you sure you want to logout?'),
+      actions: <Widget>[
+        TextButton(
+          child: Text('No'),
+          onPressed: () => Navigator.of(context).pop(false),
+        ),
+        TextButton(
+          child: Text('Yes'),
+          onPressed: () => Navigator.of(context).pop(true),
+        ),
+      ],
+    ),
+  );
+
+  if (confirm) {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.clear();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LoginPage(),
+      ),
+    );
+  }
+}
 }

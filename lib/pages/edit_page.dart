@@ -50,13 +50,12 @@ class _EditPageState extends State<EditPage> {
               onPressed: () async {
                 try {
                   final response = await http.put(
-                    Uri.parse('http://192.168.31.24/api/users/edit/${widget.user['id']}'),
+                    Uri.parse('http://192.168.31.97/api/users/edit/${widget.user['id']}'),
                     body: {
                       'name': _nameController.text,
                       'email': _emailController.text,
                     },
                   );
-
                   if (response.statusCode == 200) {
                     setState(() {
                       widget.user['name'] = _nameController.text;
