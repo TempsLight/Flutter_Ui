@@ -5,7 +5,9 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
+
 import 'login_page.dart';
+import 'transaction_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -21,7 +23,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchUsers();
   }
@@ -36,6 +37,15 @@ class _HomePageState extends State<HomePage> {
           ElevatedButton(
             onPressed: () => logout(),
             child: const Text('Logout'),
+          ),
+          ElevatedButton(
+            child: const Text('Send Money'),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SendMoneyPage()),
+              );
+            },
           ),
         ],
       ),
@@ -56,7 +66,13 @@ class _HomePageState extends State<HomePage> {
                 child: ListTile(
                   leading: const Icon(Icons.person),
                   title: Text(users['name']),
-                  subtitle: Text(users['email']),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(users['email']),
+                      Text(users['balance']), 
+                    ],
+                  ),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
@@ -120,7 +136,7 @@ class _HomePageState extends State<HomePage> {
 
   void navigateToAddPage() {
     final route = MaterialPageRoute(
-      builder: (context) => RegisterPage(),
+      builder: (context) => const RegisterPage(),
     );
     Navigator.push(context, route);
   }
@@ -175,33 +191,33 @@ class _HomePageState extends State<HomePage> {
   }
 
   void logout() async {
-  final confirm = await showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: Text('Confirm Logout'),
-      content: Text('Are you sure you want to logout?'),
-      actions: <Widget>[
-        TextButton(
-          child: Text('No'),
-          onPressed: () => Navigator.of(context).pop(false),
-        ),
-        TextButton(
-          child: Text('Yes'),
-          onPressed: () => Navigator.of(context).pop(true),
-        ),
-      ],
-    ),
-  );
-
-  if (confirm) {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.clear();
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => LoginPage(),
+    final confirm = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Confirm Logout'),
+        content: Text('Are you sure you want to logout?'),
+        actions: <Widget>[
+          TextButton(
+            child: Text('No'),
+            onPressed: () => Navigator.of(context).pop(false),
+          ),
+          TextButton(
+            child: Text('Yes'),
+            onPressed: () => Navigator.of(context).pop(true),
+          ),
+        ],
       ),
     );
+
+    if (confirm) {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      await preferences.clear();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LoginPage(),
+        ),
+      );
+    }
   }
-}
 }
